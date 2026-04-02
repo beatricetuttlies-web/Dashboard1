@@ -4,68 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Therapeutennetzwerk · Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#F2EDE4;--cream:#FBF8F3;
-  --gd:#2D4A3E;--gm:#4A7C59;
-  --bm:#E8E0D0;--border:#DDD6C8;
-  --text:#2C2822;--mid:#7A7060;
-  --amber:#B5620A;--red:#8B2010;--blue:#1E3A5F;--pu:#5B3A8A;
-}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2.5rem 2rem}
-.page{max-width:980px;margin:0 auto}
-.setup{background:var(--cream);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:520px;margin:4rem auto}
-.setup h2{font-family:'Lora',serif;font-size:22px;color:var(--gd);margin-bottom:.5rem}
+:root{--bg:#F2EDE4;--cream:#FBF8F3;--gd:#2D4A3E;--gm:#4A7C59;--bm:#E8E0D0;--border:#DDD6C8;--text:#2C2822;--mid:#7A7060;--amber:#B5620A;--red:#8B2010;--blue:#1E3A5F;--pu:#5B3A8A}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem}
+.page{max-width:960px;margin:0 auto}
+.setup{background:var(--cream);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:500px;margin:3rem auto}
+.setup h2{font-family:'Lora',serif;font-size:20px;color:var(--gd);margin-bottom:.5rem}
 .setup p{font-size:13px;color:var(--mid);margin-bottom:1.5rem;line-height:1.6}
-.setup label{display:block;font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;margin-top:12px}
-.setup input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);background:var(--bg);outline:none}
-.setup input:focus{border-color:var(--gm)}
+label{display:block;font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.6px;margin:12px 0 5px}
+input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);background:var(--bg);outline:none}
+input:focus{border-color:var(--gm)}
 .hint{font-size:11px;color:var(--mid);background:var(--bg);border-radius:8px;padding:10px 12px;margin:12px 0;line-height:1.6;border-left:3px solid var(--gm)}
-.btn{background:var(--gd);color:#fff;border:none;border-radius:100px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;margin-top:1.5rem;transition:opacity .2s}
+.btn{background:var(--gd);color:#fff;border:none;border-radius:100px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;margin-top:1.5rem}
 .btn:hover{opacity:.85}
-.error{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 12px;font-size:12px;color:#991b1b;margin-top:12px;display:none}
+.err{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 12px;font-size:12px;color:#991b1b;margin-top:12px;display:none;line-height:1.5}
 .loading{text-align:center;padding:4rem 2rem;display:none}
-.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gm);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+.spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gm);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading p{font-size:13px;color:var(--mid)}
-.dashboard{display:none}
+.dash{display:none}
 header{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:1.5rem;margin-bottom:2rem;border-bottom:1px solid var(--border)}
-.h-left h1{font-family:'Lora',serif;font-size:26px;font-weight:500;color:var(--gd);letter-spacing:-.3px}
+.h-left h1{font-family:'Lora',serif;font-size:24px;font-weight:500;color:var(--gd)}
 .h-left p{font-size:13px;color:var(--mid);margin-top:3px}
-.datepill{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:5px 14px}
-.rbtn{background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--mid);cursor:pointer;font-family:'DM Sans',sans-serif}
+.pill{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer}
 .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .kpi-grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem}
-.kpi{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem 1rem}
+.kpi{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem .9rem}
 .kpi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.kpi-lbl{font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.6px}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px}
-.kpi-val{font-family:'Lora',serif;font-size:44px;font-weight:400;line-height:1;letter-spacing:-2px}
-.kpi-sub{font-size:11px;color:var(--mid);margin-top:7px}
+.kpi-lbl{font-size:10px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.6px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:1px}
+.kpi-val{font-family:'Lora',serif;font-size:42px;font-weight:400;line-height:1;letter-spacing:-2px}
+.kpi-sub{font-size:10px;color:var(--mid);margin-top:6px}
 .c-gd{color:var(--gd)}.c-bl{color:var(--blue)}.c-pu{color:var(--pu)}.c-am{color:var(--amber)}.c-gm{color:var(--gm)}.c-re{color:var(--red)}
 .d-gd{background:var(--gd)}.d-bl{background:var(--blue)}.d-pu{background:var(--pu)}.d-am{background:var(--amber)}.d-gm{background:var(--gm)}.d-re{background:var(--red)}
-.qbanner{background:var(--gd);border-radius:14px;padding:1.1rem 1.6rem;display:flex;align-items:center;gap:2rem;margin-bottom:2rem}
+.qbanner{background:var(--gd);border-radius:14px;padding:1rem 1.5rem;display:flex;align-items:center;gap:2rem;margin-bottom:2rem}
 .q-lbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-.q-val{font-family:'Lora',serif;font-size:30px;color:#fff;letter-spacing:-1px}
+.q-val{font-family:'Lora',serif;font-size:28px;color:#fff;letter-spacing:-1px}
 .q-track{flex:1}.q-bg{background:rgba(255,255,255,.15);border-radius:100px;height:5px}
 .q-fill{background:#7EC99A;height:100%;border-radius:100px;transition:width 1s ease}
-.q-sub{display:flex;justify-content:space-between;margin-top:5px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35)}
+.q-sub{display:flex;justify-content:space-between;margin-top:5px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.3)}
 .q-ziel{text-align:right;flex-shrink:0}
-.q-zv{font-family:'Lora',serif;font-size:30px;color:#7EC99A;letter-spacing:-1px}
+.q-zv{font-family:'Lora',serif;font-size:28px;color:#7EC99A;letter-spacing:-1px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
 .sec{font-size:10px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .sec::after{content:'';flex:1;height:1px;background:var(--border)}
-.brow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.brow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
 .brow:last-child{border-bottom:none}
-.blbl{font-size:12px;color:var(--text);width:170px;flex-shrink:0}
-.btrack{flex:1;background:var(--bm);border-radius:100px;height:22px;overflow:hidden}
-.bfill{height:100%;border-radius:100px;display:flex;align-items:center;padding-left:10px;min-width:28px}
-.bval{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#fff}
-.bpct{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);width:32px;text-align:right;flex-shrink:0}
-.reset{font-size:11px;color:var(--mid);cursor:pointer;text-decoration:underline;margin-top:1.5rem;display:inline-block}
-@media(max-width:640px){.kpi-grid,.kpi-grid2,.two{grid-template-columns:1fr 1fr}body{padding:1.25rem 1rem}.qbanner{flex-wrap:wrap}}
+.blbl{font-size:11px;color:var(--text);width:160px;flex-shrink:0}
+.btrack{flex:1;background:var(--bm);border-radius:100px;height:20px;overflow:hidden}
+.bfill{height:100%;border-radius:100px;display:flex;align-items:center;padding-left:8px;min-width:24px}
+.bval{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:#fff}
+.bpct{font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);width:30px;text-align:right;flex-shrink:0}
+.reset{font-size:11px;color:var(--mid);cursor:pointer;text-decoration:underline;display:inline-block;margin-top:1rem}
+@media(max-width:600px){.kpi-grid,.kpi-grid2,.two{grid-template-columns:1fr 1fr}body{padding:1rem}.qbanner{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -73,56 +65,56 @@ header{display:flex;align-items:flex-end;justify-content:space-between;padding-b
 
 <div class="setup" id="setup">
   <h2>Dashboard einrichten</h2>
-  <p>Einmalig verbinden – danach lädt das Dashboard alle Zahlen live aus Notion.</p>
+  <p>Einmalig verbinden – danach lädt das Dashboard live aus Notion.</p>
   <div class="hint">
     <strong>API Key:</strong> notion.so/my-integrations → Integration öffnen → Secret kopieren<br><br>
-    <strong>Datenbank ID:</strong> In der URL deiner Notion-Datenbank: notion.so/<strong>DIESE-ID</strong>?v=...
+    <strong>Datenbank ID:</strong> In Notion bei deiner Datenbank → ··· → Datenquellen-ID kopieren
   </div>
   <label>Notion API Key</label>
   <input type="password" id="api-key" placeholder="ntn_xxxxxxxxxxxxxxxx">
   <label>Notion Datenbank ID</label>
-  <input type="text" id="db-id" placeholder="33682a2699e8807d87e5fd370fa847a8" value="33682a2699e8807d87e5fd370fa847a8">
+  <input type="text" id="db-id" placeholder="33682a2699e8807d87e5fd370fa847a8">
   <button class="btn" onclick="connect()">Verbinden & Dashboard laden</button>
-  <div class="error" id="err"></div>
+  <div class="err" id="err"></div>
 </div>
 
 <div class="loading" id="loading">
-  <div class="spinner"></div>
-  <p>Daten werden aus Notion geladen...</p>
+  <div class="spin"></div>
+  <p style="font-size:13px;color:var(--mid)">Daten werden geladen...</p>
 </div>
 
-<div class="dashboard" id="dashboard">
+<div class="dash" id="dash">
   <header>
     <div class="h-left">
       <h1>Therapeutennetzwerk</h1>
       <p>Sales Dashboard · Beatrice Tuttlies</p>
     </div>
-    <div style="display:flex;gap:10px;align-items:center">
-      <div class="datepill" id="dp"></div>
-      <button class="rbtn" onclick="loadData()">↻ Aktualisieren</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="pill" id="dp"></div>
+      <div class="pill" onclick="loadData()">↻ Neu laden</div>
     </div>
   </header>
 
   <div class="kpi-grid">
-    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Gesamt</span><span class="dot d-gd"></span></div><div class="kpi-val c-gd" id="k-gesamt">–</div><div class="kpi-sub">in der Datenbank</div></div>
-    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Von Thomas</span><span class="dot d-bl"></span></div><div class="kpi-val c-bl" id="k-thomas">–</div><div class="kpi-sub">warm · direkt</div></div>
-    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Kongress / Event</span><span class="dot d-pu"></span></div><div class="kpi-val c-pu" id="k-kong">–</div><div class="kpi-sub">warm · persönlich</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Gesamt</span><span class="dot d-gd"></span></div><div class="kpi-val c-gd" id="k-ges">–</div><div class="kpi-sub">in der Datenbank</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Von Thomas</span><span class="dot d-bl"></span></div><div class="kpi-val c-bl" id="k-tho">–</div><div class="kpi-sub">warm · direkt</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Kongress</span><span class="dot d-pu"></span></div><div class="kpi-val c-pu" id="k-kon">–</div><div class="kpi-sub">warm · persönlich</div></div>
   </div>
   <div class="kpi-grid2">
-    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">In Verhandlung</span><span class="dot d-am"></span></div><div class="kpi-val c-am" id="k-verh">–</div><div class="kpi-sub">aktiv im Gespräch</div></div>
-    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Abgeschlossen</span><span class="dot d-gm"></span></div><div class="kpi-val c-gm" id="k-abg">–</div><div class="kpi-sub">live · Kooperation aktiv</div></div>
-    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Heute fällig</span><span class="dot d-re"></span></div><div class="kpi-val c-re" id="k-heute">–</div><div class="kpi-sub">→ Follow-up nötig</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">In Verhandlung</span><span class="dot d-am"></span></div><div class="kpi-val c-am" id="k-ver">–</div><div class="kpi-sub">aktiv im Gespräch</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Abgeschlossen</span><span class="dot d-gm"></span></div><div class="kpi-val c-gm" id="k-abg">–</div><div class="kpi-sub">Kooperation live</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Heute fällig</span><span class="dot d-re"></span></div><div class="kpi-val c-re" id="k-heu">–</div><div class="kpi-sub">→ Follow-up nötig</div></div>
   </div>
 
   <div class="qbanner">
-    <div><div class="q-lbl">Abschlussquote</div><div class="q-val" id="q-val">–</div></div>
-    <div class="q-track"><div class="q-bg"><div class="q-fill" id="q-fill" style="width:0%"></div></div><div class="q-sub"><span>0%</span><span>Ziel 70%</span><span>100%</span></div></div>
+    <div><div class="q-lbl">Abschlussquote</div><div class="q-val" id="q-v">–</div></div>
+    <div class="q-track"><div class="q-bg"><div class="q-fill" id="q-f" style="width:0%"></div></div><div class="q-sub"><span>0%</span><span>Ziel 70%</span><span>100%</span></div></div>
     <div class="q-ziel"><div class="q-lbl">Ziel</div><div class="q-zv">70%</div></div>
   </div>
 
   <div class="two">
     <div><div class="sec">Sales-Funnel</div><div id="funnel"></div></div>
-    <div><div class="sec">Kontakte nach Quelle</div><div id="sources"></div></div>
+    <div><div class="sec">Nach Quelle</div><div id="sources"></div></div>
   </div>
 
   <span class="reset" onclick="reset()">Verbindung zurücksetzen</span>
@@ -130,170 +122,125 @@ header{display:flex;align-items:flex-end;justify-content:space-between;padding-b
 
 </div>
 <script>
-document.getElementById('dp').textContent = new Date().toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+document.getElementById('dp').textContent = new Date().toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
 
-function ld(k){ return localStorage.getItem('tndash_'+k); }
-function sv(k,v){ localStorage.setItem('tndash_'+k,v); }
+const K = 'tn_key', D = 'tn_db';
+const ld = k => localStorage.getItem(k);
+const sv = (k,v) => localStorage.setItem(k,v);
 
 async function connect(){
   const key = document.getElementById('api-key').value.trim();
   const db  = document.getElementById('db-id').value.trim().replace(/-/g,'');
   if(!key){ showErr('Bitte API Key eingeben.'); return; }
   if(!db){  showErr('Bitte Datenbank ID eingeben.'); return; }
-  sv('key', key); sv('db', db);
+  sv(K,key); sv(D,db);
   await loadData();
 }
 
 async function loadData(){
-  const key = ld('key');
-  const db  = ld('db');
-  if(!key || !db){ show('setup'); return; }
+  const key = ld(K), db = ld(D);
+  if(!key||!db){ show('setup'); return; }
   show('loading');
 
-  try {
-    let pages = [];
-    let cursor = null;
-    let hasMore = true;
+  // Mehrere Proxies versuchen
+  const proxies = [
+    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    url => `https://proxy.cors.sh/${url}`,
+  ];
 
-    while(hasMore){
-      const body = { page_size: 100 };
-      if(cursor) body.start_cursor = cursor;
+  let pages = [], lastErr = '';
 
-      // Notion API direkt aufrufen – funktioniert wenn CORS Header gesetzt
-      // Alternativ: Netlify/Vercel Function als Proxy
-      const res = await fetch(`https://api.notion.com/v1/databases/${db}/query`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${key}`,
-          'Notion-Version': '2022-06-28',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if(!res.ok){
-        const err = await res.json();
-        throw new Error(err.message || `Fehler ${res.status}`);
-      }
-
-      const data = await res.json();
-      pages = pages.concat(data.results || []);
-      hasMore = data.has_more;
-      cursor = data.next_cursor;
-    }
-
-    render(pages);
-    show('dashboard');
-
-  } catch(e) {
-    // CORS Fehler → Fallback mit Proxy
-    if(e.message.includes('Failed to fetch') || e.message.includes('CORS')){
-      await loadViaProxy();
-    } else {
-      show('setup');
-      showErr('Fehler: ' + e.message);
+  for(const proxy of proxies){
+    try {
+      pages = await fetchAll(key, db, proxy);
+      render(pages);
+      show('dash');
+      return;
+    } catch(e){
+      lastErr = e.message;
+      continue;
     }
   }
+
+  show('setup');
+  showErr(`Verbindung fehlgeschlagen. Bitte prüfe:\n1. API Key korrekt?\n2. Integration "Dashboard YBL" mit Datenbank verbunden?\n3. Datenbank ID korrekt?\n\nFehler: ${lastErr}`);
 }
 
-async function loadViaProxy(){
-  const key = ld('key');
-  const db  = ld('db');
-
-  try {
-    let pages = [];
-    let cursor = null;
-    let hasMore = true;
-
-    while(hasMore){
-      const body = { page_size: 100 };
-      if(cursor) body.start_cursor = cursor;
-
-      const target = `https://api.notion.com/v1/databases/${db}/query`;
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(target)}`;
-
-      const res = await fetch(proxyUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${key}`,
-          'Notion-Version': '2022-06-28',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if(!res.ok) throw new Error(`Proxy Fehler ${res.status}`);
-
-      const data = await res.json();
-      pages = pages.concat(data.results || []);
-      hasMore = data.has_more;
-      cursor = data.next_cursor;
+async function fetchAll(key, db, proxyFn){
+  let pages=[], cursor=null, hasMore=true;
+  while(hasMore){
+    const body={page_size:100};
+    if(cursor) body.start_cursor=cursor;
+    const url = `https://api.notion.com/v1/databases/${db}/query`;
+    const res = await fetch(proxyFn(url),{
+      method:'POST',
+      headers:{
+        'Authorization':`Bearer ${key}`,
+        'Notion-Version':'2022-06-28',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(body)
+    });
+    if(!res.ok){
+      const e = await res.text();
+      throw new Error(`HTTP ${res.status}: ${e.substring(0,100)}`);
     }
-
-    render(pages);
-    show('dashboard');
-
-  } catch(e){
-    show('setup');
-    showErr('Verbindung fehlgeschlagen. Bitte prüfe: 1) API Key korrekt? 2) Integration mit Datenbank verbunden? 3) Datenbank ID korrekt? Fehler: ' + e.message);
+    const data = await res.json();
+    if(data.object==='error') throw new Error(data.message);
+    pages = pages.concat(data.results||[]);
+    hasMore = data.has_more;
+    cursor = data.next_cursor;
   }
+  return pages;
 }
 
 function render(pages){
   const today = new Date().toISOString().split('T')[0];
-  let gesamt=0,thomas=0,kong=0,verh=0,abg=0,heute=0;
-  const funnel={'Noch nicht kontaktiert':0,'kontaktiert':0,'Interesse':0,'in Verhandlung':0,'abgeschlossen (Deal)':0,'Absage/keine Rückmeldung nach 3 Versuchen':0,'pausiert':0};
-  const sources={'Thomas:warmer Lead':0,'Instagram-Recherche':0,'Kongress / Event':0,'Empfehlung':0,'Direktrecherche':0,'Bestandsnetzwerk':0};
+  let ges=0,tho=0,kon=0,ver=0,abg=0,heu=0;
+  const f={'Noch nicht kontaktiert':0,'kontaktiert':0,'Interesse':0,'in Verhandlung':0,'abgeschlossen (Deal)':0,'Absage/keine Rückmeldung nach 3 Versuchen':0,'pausiert':0};
+  const s={'Thomas:warmer Lead':0,'Instagram-Recherche':0,'Kongress / Event':0,'Empfehlung':0,'Direktrecherche':0,'Bestandsnetzwerk':0};
 
   pages.forEach(p=>{
-    const props = p.properties||{};
-    gesamt++;
-    const quelle  = getProp(props,'Quelle');
-    const status  = getProp(props,'Sales-Status');
-    const datum   = getPropDate(props,'Follow-up fällig');
-    const abgesch = getPropCheck(props,'Abgeschlossen');
-
-    if(quelle==='Thomas:warmer Lead') thomas++;
-    if(quelle==='Kongress / Event') kong++;
-    if(status==='in Verhandlung') verh++;
-    if(status==='abgeschlossen (Deal)' || abgesch) abg++;
-    if(datum && datum<=today && status!=='abgeschlossen (Deal)') heute++;
-    if(funnel[status]!==undefined) funnel[status]++;
-    if(sources[quelle]!==undefined) sources[quelle]++;
+    const pr=p.properties||{};
+    ges++;
+    const q=gS(pr,'Quelle'), st=gS(pr,'Sales-Status'), dt=gD(pr,'Follow-up fällig'), ch=gC(pr,'Abgeschlossen');
+    if(q==='Thomas:warmer Lead') tho++;
+    if(q==='Kongress / Event') kon++;
+    if(st==='in Verhandlung') ver++;
+    if(st==='abgeschlossen (Deal)'||ch) abg++;
+    if(dt&&dt<=today&&st!=='abgeschlossen (Deal)') heu++;
+    if(f[st]!==undefined) f[st]++;
+    if(s[q]!==undefined) s[q]++;
   });
 
-  set('k-gesamt', gesamt);
-  set('k-thomas', thomas);
-  set('k-kong', kong);
-  set('k-verh', verh);
-  set('k-abg', abg);
-  set('k-heute', heute);
+  set('k-ges',ges); set('k-tho',tho); set('k-kon',kon);
+  set('k-ver',ver); set('k-abg',abg); set('k-heu',heu);
 
-  const nk = funnel['Noch nicht kontaktiert'];
-  const kontaktiert = Math.max(gesamt-nk,0);
-  const q = kontaktiert>0 ? Math.round(abg/kontaktiert*1000)/10 : 0;
-  document.getElementById('q-val').textContent = q.toFixed(1)+'%';
-  document.getElementById('q-fill').style.width = Math.min(q,100)+'%';
+  const nk=f['Noch nicht kontaktiert'], kt=Math.max(ges-nk,0);
+  const q=kt>0?Math.round(abg/kt*1000)/10:0;
+  document.getElementById('q-v').textContent=q.toFixed(1)+'%';
+  document.getElementById('q-f').style.width=Math.min(q,100)+'%';
 
-  buildBars('funnel',[
-    {l:'Noch nicht kontaktiert',c:'#9CA3AF',v:funnel['Noch nicht kontaktiert']},
-    {l:'Kontaktiert',            c:'#93C5FD',v:funnel['kontaktiert']},
-    {l:'Interesse',              c:'#F59E0B',v:funnel['Interesse']},
-    {l:'In Verhandlung',         c:'#B5620A',v:funnel['in Verhandlung']},
-    {l:'Abgeschlossen',          c:'#4A7C59',v:funnel['abgeschlossen (Deal)']},
-    {l:'Absage / kein Erfolg',   c:'#B91C1C',v:funnel['Absage/keine Rückmeldung nach 3 Versuchen']},
-  ], gesamt);
+  bars('funnel',[
+    {l:'Noch nicht kontaktiert',c:'#9CA3AF',v:f['Noch nicht kontaktiert']},
+    {l:'Kontaktiert',c:'#93C5FD',v:f['kontaktiert']},
+    {l:'Interesse',c:'#F59E0B',v:f['Interesse']},
+    {l:'In Verhandlung',c:'#B5620A',v:f['in Verhandlung']},
+    {l:'Abgeschlossen',c:'#4A7C59',v:f['abgeschlossen (Deal)']},
+    {l:'Absage',c:'#B91C1C',v:f['Absage/keine Rückmeldung nach 3 Versuchen']},
+  ],ges);
 
-  buildBars('sources',[
-    {l:'Von Thomas',          c:'#1E3A5F',v:sources['Thomas:warmer Lead']},
-    {l:'Instagram-Recherche', c:'#5B3A8A',v:sources['Instagram-Recherche']},
-    {l:'Kongress / Event',    c:'#2D4A3E',v:sources['Kongress / Event']},
-    {l:'Empfehlung',          c:'#B5620A',v:sources['Empfehlung']},
-    {l:'Direktrecherche',     c:'#7A7060',v:sources['Direktrecherche']},
-  ], gesamt);
+  bars('sources',[
+    {l:'Von Thomas',c:'#1E3A5F',v:s['Thomas:warmer Lead']},
+    {l:'Instagram-Recherche',c:'#5B3A8A',v:s['Instagram-Recherche']},
+    {l:'Kongress / Event',c:'#2D4A3E',v:s['Kongress / Event']},
+    {l:'Empfehlung',c:'#B5620A',v:s['Empfehlung']},
+    {l:'Direktrecherche',c:'#7A7060',v:s['Direktrecherche']},
+  ],ges);
 }
 
-function buildBars(id,items,total){
+function bars(id,items,total){
   const el=document.getElementById(id);
   el.innerHTML='';
   items.forEach(i=>{
@@ -305,31 +252,15 @@ function buildBars(id,items,total){
   });
 }
 
-function getProp(props,name){
-  const p=props[name];
-  if(!p) return '';
-  if(p.type==='select') return p.select?.name||'';
-  if(p.type==='rich_text') return p.rich_text?.[0]?.plain_text||'';
-  if(p.type==='title') return p.title?.[0]?.plain_text||'';
-  return '';
-}
-function getPropDate(props,name){
-  const p=props[name];
-  if(!p||p.type!=='date') return null;
-  return p.date?.start||null;
-}
-function getPropCheck(props,name){
-  const p=props[name];
-  if(!p||p.type!=='checkbox') return false;
-  return p.checkbox===true;
-}
+function gS(p,n){const x=p[n];if(!x)return'';if(x.type==='select')return x.select?.name||'';if(x.type==='rich_text')return x.rich_text?.[0]?.plain_text||'';if(x.type==='title')return x.title?.[0]?.plain_text||'';return'';}
+function gD(p,n){const x=p[n];if(!x||x.type!=='date')return null;return x.date?.start||null;}
+function gC(p,n){const x=p[n];if(!x||x.type!=='checkbox')return false;return x.checkbox===true;}
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function show(s){['setup','loading','dash'].forEach(x=>document.getElementById(x).style.display=x===s?'block':'none');}
+function showErr(m){const e=document.getElementById('err');e.textContent=m;e.style.display='block';}
+function reset(){localStorage.removeItem(K);localStorage.removeItem(D);show('setup');}
 
-function set(id,val){ const e=document.getElementById(id); if(e) e.textContent=val; }
-function show(s){ ['setup','loading','dashboard'].forEach(x=>document.getElementById(x).style.display=x===s?'block':'none'); }
-function showErr(msg){ const e=document.getElementById('err'); e.textContent=msg; e.style.display='block'; }
-function reset(){ localStorage.removeItem('tndash_key'); localStorage.removeItem('tndash_db'); show('setup'); }
-
-if(ld('key')&&ld('db')) loadData(); else show('setup');
+if(ld(K)&&ld(D)) loadData(); else show('setup');
 </script>
 </body>
 </html>
