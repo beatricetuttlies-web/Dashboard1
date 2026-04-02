@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Therapeutennetzwerk · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F2EDE4;--cream:#FBF8F3;
+  --gd:#2D4A3E;--gm:#4A7C59;
+  --bm:#E8E0D0;--border:#DDD6C8;
+  --text:#2C2822;--mid:#7A7060;
+  --amber:#B5620A;--red:#8B2010;--blue:#1E3A5F;--pu:#5B3A8A;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2.5rem 2rem}
+.page{max-width:980px;margin:0 auto}
+
+/* SETUP SCREEN */
+.setup{background:var(--cream);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:520px;margin:4rem auto}
+.setup h2{font-family:'Lora',serif;font-size:22px;color:var(--gd);margin-bottom:.5rem}
+.setup p{font-size:13px;color:var(--mid);margin-bottom:1.5rem;line-height:1.6}
+.setup label{display:block;font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.setup input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);background:var(--bg);outline:none;margin-bottom:12px}
+.setup input:focus{border-color:var(--gm)}
+.setup .hint{font-size:11px;color:var(--mid);background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:1.5rem;line-height:1.6}
+.setup .hint a{color:var(--gm)}
+.btn-primary{background:var(--gd);color:#fff;border:none;border-radius:100px;padding:10px 24px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s;width:100%}
+.btn-primary:hover{opacity:.85}
+.error-msg{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 12px;font-size:12px;color:#991b1b;margin-top:12px;display:none}
+
+/* LOADING */
+.loading{text-align:center;padding:4rem 2rem;display:none}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gm);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{font-size:13px;color:var(--mid)}
+
+/* DASHBOARD */
+.dashboard{display:none}
+header{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:1.5rem;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.h-left h1{font-family:'Lora',serif;font-size:26px;font-weight:500;color:var(--gd);letter-spacing:-.3px}
+.h-left p{font-size:13px;color:var(--mid);margin-top:3px}
+.header-right{display:flex;align-items:center;gap:10px}
+.datepill{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:5px 14px}
+.refresh-btn{background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--mid);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.refresh-btn:hover{background:var(--bm)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.kpi-grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem}
+.kpi{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem 1rem;transition:box-shadow .2s}
+.kpi:hover{box-shadow:0 2px 12px rgba(45,74,62,.08)}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.kpi-lbl{font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.6px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.kpi-val{font-family:'Lora',serif;font-size:44px;font-weight:400;line-height:1;letter-spacing:-2px}
+.kpi-sub{font-size:11px;color:var(--mid);margin-top:7px}
+.c-gd{color:var(--gd)}.c-bl{color:var(--blue)}.c-pu{color:var(--pu)}.c-am{color:var(--amber)}.c-gm{color:var(--gm)}.c-re{color:var(--red)}
+.d-gd{background:var(--gd)}.d-bl{background:var(--blue)}.d-pu{background:var(--pu)}.d-am{background:var(--amber)}.d-gm{background:var(--gm)}.d-re{background:var(--red)}
+
+.qbanner{background:var(--gd);border-radius:14px;padding:1.1rem 1.6rem;display:flex;align-items:center;gap:2rem;margin-bottom:2rem}
+.q-lbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.q-val{font-family:'Lora',serif;font-size:30px;color:#fff;letter-spacing:-1px}
+.q-track{flex:1}.q-bg{background:rgba(255,255,255,.15);border-radius:100px;height:5px}
+.q-fill{background:#7EC99A;height:100%;border-radius:100px;transition:width 1s ease}
+.q-sub{display:flex;justify-content:space-between;margin-top:5px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35)}
+.q-ziel{text-align:right;flex-shrink:0}
+.q-zv{font-family:'Lora',serif;font-size:30px;color:#7EC99A;letter-spacing:-1px}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.sec{font-size:10px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.brow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.brow:last-child{border-bottom:none}
+.blbl{font-size:12px;color:var(--text);width:170px;flex-shrink:0}
+.btrack{flex:1;background:var(--bm);border-radius:100px;height:22px;overflow:hidden}
+.bfill{height:100%;border-radius:100px;display:flex;align-items:center;padding-left:10px;min-width:28px;transition:width .9s ease}
+.bval{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#fff}
+.bpct{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);width:32px;text-align:right;flex-shrink:0}
+
+.reset-link{font-size:11px;color:var(--mid);cursor:pointer;text-decoration:underline;margin-top:1.5rem;display:inline-block}
+.reset-link:hover{color:var(--red)}
+
+.hint{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gm);border-radius:10px;padding:.85rem 1.1rem;font-size:12px;color:var(--mid);margin-top:1rem}
+
+@media(max-width:640px){.kpi-grid,.kpi-grid2,.two{grid-template-columns:1fr 1fr}body{padding:1.25rem 1rem}.qbanner{flex-wrap:wrap;gap:1rem}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- SETUP -->
+<div class="setup" id="setup">
+  <h2>Dashboard einrichten</h2>
+  <p>Verbinde das Dashboard einmalig mit deiner Notion-Datenbank. Die Daten werden dann live aus Notion geladen.</p>
+
+  <div class="hint">
+    <strong>So bekommst du deinen API Key:</strong><br>
+    1. Geh auf <a href="https://notion.so/my-integrations" target="_blank">notion.so/my-integrations</a><br>
+    2. „New integration" → Name: Dashboard → Submit<br>
+    3. API Key kopieren (beginnt mit <code>secret_</code>)<br>
+    4. In Notion: Datenbank öffnen → „..." → Connections → Integration hinzufügen
+  </div>
+
+  <label>Notion API Key</label>
+  <input type="password" id="api-key" placeholder="secret_xxxxxxxxxxxxxxxx">
+
+  <label>Notion Datenbank ID</label>
+  <input type="text" id="db-id" placeholder="z.B. 0b9a472938da48b1be7cea3f1acd68cb">
+  <div class="hint" style="margin-top:-6px">
+    Die ID findest du in der URL deiner Notion-Datenbank: notion.so/<strong>DIESE-ID-HIER</strong>?v=...
+  </div>
+
+  <button class="btn-primary" onclick="connect()">Verbinden & Dashboard laden</button>
+  <div class="error-msg" id="error-msg"></div>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p>Daten werden aus Notion geladen...</p>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <header>
+    <div class="h-left">
+      <h1>Therapeutennetzwerk</h1>
+      <p>Sales Dashboard · Beatrice Tuttlies</p>
+    </div>
+    <div class="header-right">
+      <div class="datepill" id="dp"></div>
+      <button class="refresh-btn" onclick="loadData()"><span class="status-dot"></span>Aktualisieren</button>
+    </div>
+  </header>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Gesamt</span><span class="dot d-gd"></span></div><div class="kpi-val c-gd" id="k-gesamt">–</div><div class="kpi-sub">in der Datenbank</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Von Thomas</span><span class="dot d-bl"></span></div><div class="kpi-val c-bl" id="k-thomas">–</div><div class="kpi-sub">warm · direkt</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Kongress / Event</span><span class="dot d-pu"></span></div><div class="kpi-val c-pu" id="k-kong">–</div><div class="kpi-sub">warm · persönlich</div></div>
+  </div>
+  <div class="kpi-grid2">
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">In Verhandlung</span><span class="dot d-am"></span></div><div class="kpi-val c-am" id="k-verh">–</div><div class="kpi-sub">aktiv im Gespräch</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Abgeschlossen</span><span class="dot d-gm"></span></div><div class="kpi-val c-gm" id="k-abg">–</div><div class="kpi-sub">live · Kooperation aktiv</div></div>
+    <div class="kpi"><div class="kpi-top"><span class="kpi-lbl">Heute fällig</span><span class="dot d-re"></span></div><div class="kpi-val c-re" id="k-heute">–</div><div class="kpi-sub">→ in Notion als Task</div></div>
+  </div>
+
+  <div class="qbanner">
+    <div><div class="q-lbl">Abschlussquote</div><div class="q-val" id="q-val">–</div></div>
+    <div class="q-track"><div class="q-bg"><div class="q-fill" id="q-fill" style="width:0%"></div></div><div class="q-sub"><span>0%</span><span>Ziel 70%</span><span>100%</span></div></div>
+    <div class="q-ziel"><div class="q-lbl">Ziel</div><div class="q-zv">70%</div></div>
+  </div>
+
+  <div class="two">
+    <div><div class="sec">Sales-Funnel</div><div id="funnel"></div></div>
+    <div><div class="sec">Kontakte nach Quelle</div><div id="sources"></div></div>
+  </div>
+
+  <div class="hint">Daten werden live aus deiner Notion-Datenbank geladen. Klick auf „Aktualisieren" für den neuesten Stand.</div>
+  <span class="reset-link" onclick="reset()">Verbindung zurücksetzen</span>
+</div>
+
+</div>
+<script>
+document.getElementById('dp').textContent = new Date().toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+const PROXY = 'https://api.allorigins.win/raw?url=';
+
+function getKey(){ return localStorage.getItem('tn_apikey'); }
+function getDB(){ return localStorage.getItem('tn_dbid'); }
+
+async function connect(){
+  const key = document.getElementById('api-key').value.trim();
+  const db  = document.getElementById('db-id').value.trim().replace(/-/g,'');
+  if(!key || !db){ showError('Bitte beide Felder ausfüllen.'); return; }
+  localStorage.setItem('tn_apikey', key);
+  localStorage.setItem('tn_dbid', db);
+  await loadData();
+}
+
+async function loadData(){
+  const key = getKey();
+  const db  = getDB();
+  if(!key || !db){ show('setup'); return; }
+
+  show('loading');
+
+  try {
+    // Notion DB via Proxy abfragen (CORS-Umgehung für lokale HTML-Datei)
+    const url = `https://api.notion.com/v1/databases/${db}/query`;
+    const proxyUrl = PROXY + encodeURIComponent(url);
+
+    let allPages = [];
+    let cursor = null;
+    let hasMore = true;
+
+    while(hasMore){
+      const body = { page_size: 100 };
+      if(cursor) body.start_cursor = cursor;
+
+      const res = await fetch(proxyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-notion-api-key': key,
+          'x-notion-version': '2022-06-28',
+        },
+        body: JSON.stringify(body)
+      });
+
+      if(!res.ok){
+        const err = await res.text();
+        throw new Error(`Notion API Fehler: ${res.status} – Bitte API Key und Datenbank ID prüfen.`);
+      }
+
+      const data = await res.json();
+      allPages = allPages.concat(data.results || []);
+      hasMore = data.has_more;
+      cursor = data.next_cursor;
+    }
+
+    renderDashboard(allPages);
+    show('dashboard');
+
+  } catch(e){
+    show('setup');
+    showError(e.message);
+  }
+}
+
+function renderDashboard(pages){
+  const today = new Date().toISOString().split('T')[0];
+  let gesamt=0, thomas=0, kong=0, verh=0, abg=0, heute=0;
+  const funnel = {'Noch nicht kontaktiert':0,'Kontakt 1 gesendet':0,'Kontakt 2 gesendet':0,'Kontakt 3 gesendet':0,'In Verhandlung':0,'Abgeschlossen':0,'Beendet':0};
+  const sources = {'Von Thomas':0,'Instagram-Recherche':0,'Kongress / Event':0,'Empfehlung':0,'Direktrecherche':0,'Bestandsnetzwerk':0};
+
+  pages.forEach(p => {
+    const props = p.properties || {};
+    gesamt++;
+
+    const quelle   = getProp(props, 'Quelle');
+    const status   = getProp(props, 'Sales-Status');
+    const datum    = getPropDate(props, 'Nächstes Datum');
+
+    if(quelle === 'Von Thomas') thomas++;
+    if(quelle === 'Kongress / Event') kong++;
+    if(status === 'In Verhandlung') verh++;
+    if(status === 'Abgeschlossen') abg++;
+    if(datum && datum <= today && status !== 'Abgeschlossen' && status !== 'Beendet') heute++;
+    if(funnel[status] !== undefined) funnel[status]++;
+    if(sources[quelle] !== undefined) sources[quelle]++;
+  });
+
+  // KPIs
+  set('k-gesamt', gesamt);
+  set('k-thomas', thomas);
+  set('k-kong', kong);
+  set('k-verh', verh);
+  set('k-abg', abg);
+  set('k-heute', heute);
+
+  // Quote
+  const nk = funnel['Noch nicht kontaktiert'];
+  const kontaktiert = Math.max(gesamt - nk, 0);
+  const q = kontaktiert > 0 ? Math.round(abg / kontaktiert * 1000) / 10 : 0;
+  document.getElementById('q-val').textContent = q.toFixed(1) + '%';
+  document.getElementById('q-fill').style.width = Math.min(q, 100) + '%';
+
+  // Funnel
+  buildBars('funnel', [
+    {l:'Noch nicht kontaktiert', c:'#9CA3AF', v:funnel['Noch nicht kontaktiert']},
+    {l:'Kontakt 1 gesendet',     c:'#93C5FD', v:funnel['Kontakt 1 gesendet']},
+    {l:'Kontakt 2 gesendet',     c:'#3B82F6', v:funnel['Kontakt 2 gesendet']},
+    {l:'Kontakt 3 gesendet',     c:'#1D4ED8', v:funnel['Kontakt 3 gesendet']},
+    {l:'In Verhandlung',         c:'#B5620A', v:funnel['In Verhandlung']},
+    {l:'Abgeschlossen',          c:'#4A7C59', v:funnel['Abgeschlossen']},
+    {l:'Beendet',                c:'#B91C1C', v:funnel['Beendet']},
+  ], gesamt);
+
+  buildBars('sources', [
+    {l:'Von Thomas',          c:'#1E3A5F', v:sources['Von Thomas']},
+    {l:'Instagram-Recherche', c:'#5B3A8A', v:sources['Instagram-Recherche']},
+    {l:'Kongress / Event',    c:'#2D4A3E', v:sources['Kongress / Event']},
+    {l:'Empfehlung',          c:'#B5620A', v:sources['Empfehlung']},
+    {l:'Direktrecherche',     c:'#7A7060', v:sources['Direktrecherche']},
+    {l:'Bestandsnetzwerk',    c:'#0E6655', v:sources['Bestandsnetzwerk']},
+  ], gesamt);
+}
+
+function buildBars(id, items, total){
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  items.forEach(i => {
+    const pct = total > 0 ? Math.round(i.v / total * 100) : 0;
+    const row = document.createElement('div');
+    row.className = 'brow';
+    row.innerHTML = `
+      <div class="blbl">${i.l}</div>
+      <div class="btrack"><div class="bfill" style="width:${pct}%;background:${i.c}">
+        <span class="bval">${i.v}</span>
+      </div></div>
+      <div class="bpct">${pct}%</div>`;
+    el.appendChild(row);
+  });
+}
+
+function getProp(props, name){
+  const p = props[name];
+  if(!p) return '';
+  if(p.type === 'select') return p.select?.name || '';
+  if(p.type === 'rich_text') return p.rich_text?.[0]?.plain_text || '';
+  if(p.type === 'title') return p.title?.[0]?.plain_text || '';
+  return '';
+}
+
+function getPropDate(props, name){
+  const p = props[name];
+  if(!p || p.type !== 'date') return null;
+  return p.date?.start || null;
+}
+
+function set(id, val){ document.getElementById(id).textContent = val; }
+
+function show(screen){
+  ['setup','loading','dashboard'].forEach(s => {
+    document.getElementById(s).style.display = s === screen ? (s === 'loading' ? 'block' : s === 'setup' ? 'block' : 'block') : 'none';
+  });
+}
+
+function showError(msg){
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function reset(){
+  localStorage.removeItem('tn_apikey');
+  localStorage.removeItem('tn_dbid');
+  show('setup');
+}
+
+// Auto-laden wenn bereits eingerichtet
+if(getKey() && getDB()){
+  loadData();
+} else {
+  show('setup');
+}
+</script>
+</body>
+</html>
